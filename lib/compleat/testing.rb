@@ -2,8 +2,18 @@ module Compleat
   module Testing
     extend self
 
+    def targets
+      @targets ||= []
+    end
+
     def run_tests
-      puts "This is the hook that will run your tests"
+      targets.each { |e| puts "Detected test class: #{e.name}" } 
+    end
+  end
+
+  module TestHelpers
+    def self.included(base)
+      Compleat::Testing.targets << base
     end
   end
 end
