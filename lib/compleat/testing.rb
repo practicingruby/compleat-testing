@@ -15,9 +15,7 @@ module Compleat
     end
 
     def run_tests
-      tests_executed = 0
-      tests_failed   = 0
-      tests_error    = 0
+      tests_executed, tests_failed, tests_error = 0,0,0
 
       each_test_case do |test_class, test_method|
         tests_executed += 1
@@ -45,7 +43,16 @@ module Compleat
 
     module Helpers
       def self.included(base)
+        base.extend(ClassMethods)
         Compleat::Testing.targets << base
+      end
+
+      module ClassMethods
+        # code stolen from citrusbyte/contest, edited for brevity
+        def test(name, &block)
+          tname = "test_#{name.gsub(/\W+/, ' ').strip.gsub(/\s+/,'_')}".to_sym
+          define_method(tname, &block)
+        end
       end
 
       def setup
